@@ -1,6 +1,4 @@
 const express = require('express')
-const dotenv = require('dotenv')
-dotenv.config()
 
 const articleRoutes = require('../routes/article')
 const authorRoutes = require('../routes/author')

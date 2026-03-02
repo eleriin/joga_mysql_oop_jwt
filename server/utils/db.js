@@ -8,7 +8,7 @@ const connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE
 })
-
+console.log(process.env.DB_USER)
 connection.connect((error) => {
     if(error) throw error;
     console.log('MySQL server connected')

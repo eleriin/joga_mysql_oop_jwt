@@ -5,7 +5,7 @@ const authRequired = (req, res, next) =>{
   const [type, token ] = header.split(' ')
 
   if (type !=='Bearer' || !token) {
-    return res.startus(401).json({msg:'Missing or invalid Authorization header'})
+    return res.status(401).json({msg:'Missing or invalid Authorization header'})
   }
   
   try { 

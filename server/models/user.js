@@ -2,7 +2,7 @@ const BaseSQLModel = require('./base');
 
 class UserModel extends BaseSQLModel {
   constructor() {
-    super('user');
+    super('users');
   }
 
   async findOne(username) {
@@ -11,4 +11,4 @@ class UserModel extends BaseSQLModel {
   
 }
  
-module.exports = new UserModel();
+module.exports = UserModel;

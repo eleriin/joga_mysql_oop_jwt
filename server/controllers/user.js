@@ -3,7 +3,13 @@ const UserModel = require('../models/user');
 const { signToken } = require('../utils/jwt')
 
 class UserController {
-    
+    constructor(){
+        this.model = new UserModel();
+        
+        this.register = this.register.bind(this)
+        this.login = this.login.bind(this)
+    }
+
     async register(req, res) {
         try {
             const existingUser = await this.model.findOne(req.body.username)
@@ -34,25 +40,22 @@ class UserController {
             })
             if(registeredUserId){
                 const userData = await this.model.findById(registeredUserId)
-                req.session.user = {
+                req.user = {
                     user_id: userData.id,
                     username: userData.username,
                     role: userData.role
                 }
                 res.status(201).json({ 
-                    message: 'New user is registered',
-                    session: req.session.user    
+                    message: 'New user is registered'    
                 });
-            } else {
-                res.status(404).json({ error: 'Session is not opened' });
-            }
+            } 
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
     async login(req, res){
-        try {
+       try {
             const user = await this.model.findOne(req.body.username)
 
             if(!user){
