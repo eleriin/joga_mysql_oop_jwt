@@ -1,16 +1,9 @@
 const bcrypt = require('bcrypt')
 const UserModel = require('../models/user');
-const user = require('../models/user');
+const { signToken } = require('../utils/jwt')
 
 class UserController {
-
-    constructor() {
-        this.model = UserModel;
-        this.register = this.register.bind(this);
-        this.login = this.login.bind(this)
-        this.logout = this.logout.bind(this)
-    }
-
+    
     async register(req, res) {
         try {
             const existingUser = await this.model.findOne(req.body.username)
@@ -75,15 +68,19 @@ class UserController {
                 })
             }
 
-            req.session.user = {
-                user_id: user.id,
-                username: user.username,
-                role: user.role
-            }
-            res.status(201).json({ 
-                message: 'Login successful',
-                session: req.session.user   
-            });
+            const token = signToken ({ 
+                id: user.id,
+                username: user.username, 
+                role:user.role
+            })
+                return res.status(201).json({
+                    msg:'Login successful', token, user:{
+                        id:user.id,
+                        username:user.username, 
+                        role:user.role
+                    }
+                })
+            
         } catch(error){
             res.status(500).json({ error: error.message });
         }

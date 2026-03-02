@@ -1,5 +1,4 @@
 const express = require('express')
-const session = require('express-session')
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -26,15 +25,7 @@ class App {
     initMiddleware() {
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: true }))
-
-        this.app.use(session({
-            secret: process.env.SECRET,
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                maxAge: 1000 * 60 * 60
-            }
-        }))
+       
     }
 
     initRoutes() {

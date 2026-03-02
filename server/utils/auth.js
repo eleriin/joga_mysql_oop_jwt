@@ -1,20 +1,33 @@
-const requireLogin = (req, res, next) => {
-  if (!req.session?.user) {
-    return res.status(401).json({ message: 'Not logged in' });
+const { verifyToken } = require('./jwt')
+
+const authRequired = (req, res, next) =>{
+  const header = req.headers.authorization || ''
+  const [type, token ] = header.split(' ')
+
+  if (type !=='Bearer' || !token) {
+    return res.startus(401).json({msg:'Missing or invalid Authorization header'})
   }
-  next();
+  
+  try { 
+    const payload = verifyToken(token)
+    req.user = payload
+    next()
+  } catch (e){
+    return res.status(401).json({msg:'Invalid or expired token'})
+  }
+
 }
 
-const requireRole = (...roles) => {
+const roleRequired = (...roles) => {
   return (req, res, next) => {
-    if (!req.session?.user) {
-      return res.status(401).json({ message: 'Not logged in' });
+    if (!req.user) {
+      return res.status(401).json({ message: 'Not authenticated' });
     }
-    if (!roles.includes(req.session.user.role)) {
-      return res.status(403).json({ message: 'Forbidden: insufficient role' });
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: 'Forbidden: (role)' });
     }
     next();
   };
 }
 
-module.exports = { requireLogin, requireRole };
+module.exports = { authRequired, roleRequired };
